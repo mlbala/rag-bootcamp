@@ -1,0 +1,45 @@
+Machine Learning Algorithms: An Overview
+
+Machine learning is a branch of artificial intelligence in which computers learn patterns from data instead of following hand-written rules. A machine learning algorithm is the method a model uses to learn those patterns. Algorithms are usually grouped into three main types: supervised learning, unsupervised learning, and reinforcement learning.
+
+Supervised Learning
+In supervised learning, the model is trained on labeled data, meaning each input comes with the correct output. The goal is to predict the output for new, unseen inputs. Supervised tasks are either regression (predicting a number) or classification (predicting a category).
+
+Linear Regression predicts a continuous value by fitting a straight line through the data. It is used for tasks such as predicting house prices or sales figures.
+
+Logistic Regression is used for classification. It estimates the probability that an input belongs to a class, such as whether an email is spam or not.
+
+Decision Trees split data into branches based on feature values, forming a tree of if-then rules. They are easy to understand but can overfit the training data.
+
+Random Forest builds many decision trees on random subsets of the data and combines their votes. This reduces overfitting and usually improves accuracy.
+
+Gradient Boosting (such as XGBoost, LightGBM, and CatBoost) builds trees one after another, with each new tree correcting the errors of the previous ones. It is one of the most accurate methods for tabular data.
+
+Support Vector Machines (SVM) find the boundary that separates classes with the widest possible margin. With kernel functions, they can also handle non-linear data.
+
+K-Nearest Neighbors (KNN) classifies a new point by looking at the K closest points in the training data and taking a majority vote.
+
+Naive Bayes uses Bayes' theorem and assumes features are independent. It is fast and works well for text classification tasks like spam filtering and sentiment analysis.
+
+Unsupervised Learning
+In unsupervised learning, the data has no labels. The model tries to find hidden structure on its own.
+
+K-Means Clustering groups data into K clusters by repeatedly assigning points to the nearest cluster center and updating the centers. It is used for customer segmentation.
+
+Hierarchical Clustering builds a tree of clusters by merging or splitting groups step by step, which lets you see how groups relate to each other.
+
+DBSCAN groups points that are densely packed together and marks isolated points as outliers. It does not require choosing the number of clusters in advance.
+
+Principal Component Analysis (PCA) reduces the number of features while keeping as much of the variation in the data as possible. It is used for visualization, compression, and speeding up other algorithms.
+
+Reinforcement Learning
+In reinforcement learning, an agent learns by interacting with an environment. It takes actions, receives rewards or penalties, and learns a strategy that maximizes total reward over time. Common algorithms include Q-Learning, Deep Q-Networks (DQN), and Proximal Policy Optimization (PPO). Reinforcement learning is used in game playing, robotics, and fine-tuning large language models with human feedback (RLHF).
+
+Choosing an Algorithm
+The right algorithm depends on the problem type, the amount and quality of data, the need for interpretability, and available computing power. A common approach is to start with a simple baseline such as linear or logistic regression, then try more powerful methods like random forest or gradient boosting, and compare them using cross-validation.
+
+Evaluating Models
+Regression models are often evaluated with Mean Absolute Error (MAE), Mean Squared Error (MSE), and R-squared. Classification models are evaluated with accuracy, precision, recall, F1-score, and ROC-AUC. Splitting data into training, validation, and test sets helps check how well a model will perform on new data.
+
+Conclusion
+Machine learning algorithms are the foundation of modern AI systems. Understanding their strengths and weaknesses helps you choose the right tool for each problem, and more advanced techniques such as deep learning build directly on these core ideas.

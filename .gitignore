@@ -1,0 +1,31 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.vscode
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Generated data / vector stores
+data/processed/
+data/vectorstore/
+*.sqlite3
+*.faiss
+*.index
+chroma.sqlite3
+.chroma/
+
+# Mac OS
+.DS_Store
