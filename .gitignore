@@ -1,22 +1,47 @@
 # Python-generated files
 __pycache__/
 *.py[oc]
+*.pyd
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+*.egg
+.eggs/
 
 # Virtual environments
-.venv
-.vscode
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+*.manifest
+*.spec
+
+# Testing / linting / type-checking caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
 
 # Secrets
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+credentials.json
 
 # Jupyter
 .ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Editors / IDE
+.vscode/
+.idea/
 
 # Generated data / vector stores
 data/processed/
@@ -27,5 +52,14 @@ data/vectorstore/
 chroma.sqlite3
 .chroma/
 
-# Mac OS
+# Model / embedding caches
+.cache/
+models/
+
+# Logs
+*.log
+logs/
+
+# OS
 .DS_Store
+Thumbs.db
