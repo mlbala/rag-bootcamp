@@ -9,3 +9,8 @@ sentence-transformers
 pypdf
 pymupdf
 python-dotenv
+python-docx
+docx2txt
+unstructured[docx]
+psycopg2-binary
+
