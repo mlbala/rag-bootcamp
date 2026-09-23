@@ -40,6 +40,67 @@
           "status": "Planning"
         }
       ]
+    },
+    {
+      "id": 3,
+      "name": "Carlos Ramirez",
+      "role": "DevOps Engineer",
+      "skills": [
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "Terraform"
+      ],
+      "projects": [
+        {
+          "name": "CI/CD Migration",
+          "status": "Completed"
+        },
+        {
+          "name": "Infra Monitoring",
+          "status": "In Progress"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Priya Nair",
+      "role": "Product Manager",
+      "skills": [
+        "Roadmapping",
+        "Agile",
+        "Stakeholder Management"
+      ],
+      "projects": [
+        {
+          "name": "RAG System",
+          "status": "In Progress"
+        },
+        {
+          "name": "Customer Portal Revamp",
+          "status": "Planning"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Emily Chen",
+      "role": "Data Scientist",
+      "skills": [
+        "Python",
+        "PyTorch",
+        "NLP"
+      ],
+      "projects": [
+        {
+          "name": "Chatbot Evaluation",
+          "status": "In Progress"
+        },
+        {
+          "name": "ML Model",
+          "status": "Completed"
+        }
+      ]
     }
   ],
   "departments": {
@@ -52,6 +113,16 @@
       "head": "Sarah Williams",
       "budget": 750000,
       "team_size": 15
+    },
+    "product": {
+      "head": "Priya Nair",
+      "budget": 400000,
+      "team_size": 8
+    },
+    "infrastructure": {
+      "head": "Carlos Ramirez",
+      "budget": 600000,
+      "team_size": 10
     }
   }
 }

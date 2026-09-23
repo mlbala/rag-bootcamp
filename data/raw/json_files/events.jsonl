@@ -1,3 +1,15 @@
 {"timestamp": "2024-01-01", "event": "user_login", "user_id": 123}
 {"timestamp": "2024-01-01", "event": "page_view", "user_id": 123, "page": "/home"}
 {"timestamp": "2024-01-01", "event": "purchase", "user_id": 123, "amount": 99.99}
+{"timestamp": "2024-01-01", "event": "user_logout", "user_id": 123}
+{"timestamp": "2024-01-02", "event": "user_login", "user_id": 456}
+{"timestamp": "2024-01-02", "event": "page_view", "user_id": 456, "page": "/products"}
+{"timestamp": "2024-01-02", "event": "page_view", "user_id": 456, "page": "/products/laptop"}
+{"timestamp": "2024-01-02", "event": "add_to_cart", "user_id": 456, "product": "Laptop", "amount": 999.99}
+{"timestamp": "2024-01-02", "event": "purchase", "user_id": 456, "amount": 999.99}
+{"timestamp": "2024-01-03", "event": "user_login", "user_id": 789}
+{"timestamp": "2024-01-03", "event": "page_view", "user_id": 789, "page": "/home"}
+{"timestamp": "2024-01-03", "event": "search", "user_id": 789, "query": "wireless mouse"}
+{"timestamp": "2024-01-03", "event": "page_view", "user_id": 789, "page": "/products/mouse"}
+{"timestamp": "2024-01-03", "event": "error", "user_id": 789, "message": "payment_declined"}
+{"timestamp": "2024-01-03", "event": "user_logout", "user_id": 789}
