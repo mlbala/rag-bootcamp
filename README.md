@@ -15,10 +15,17 @@
 ## Repo layout
 
 ```
-notebooks/   Step-by-step course notebooks
-src/ragkit/  Reusable helper code
-data/        Raw documents, parsed output, and local vector stores
+notebooks/                        Step-by-step course notebooks, one folder per section
+  01_data_ingestion_parsing/      Loading and parsing text, PDF, Word, CSV/Excel, JSON, and databases
+  02_vector_embeddings/
+  03_vector_stores_databases/
+  04_advanced_chunking/
+  05_hybrid_search/
+src/ragkit/                       Reusable helper code
+data/                             Raw documents, parsed output, and local vector stores
 ```
+
+Each notebook starts by moving up to the project root (the folder with `pyproject.toml`), so paths like `data/raw/...` work from any section folder.
 
 ## Setup
 
