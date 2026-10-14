@@ -46,6 +46,8 @@ credentials.json
 # Generated data / vector stores
 data/processed/
 data/vectorstore/
+vectorstore/*
+!vectorstore/.gitkeep
 *.sqlite3
 *.faiss
 *.index
