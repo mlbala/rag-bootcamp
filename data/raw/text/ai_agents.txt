@@ -1,0 +1,30 @@
+AI Agents: An Introduction
+
+An AI agent is a system that uses a large language model (LLM) to decide what to do in order to reach a goal. A normal chatbot answers one message at a time. An agent can plan several steps, call tools such as a web search or a calculator, look at the results, and keep going until the task is finished. In short, the LLM acts as the agent's brain, and tools act as its hands.
+
+Core Components
+The model is the LLM that reasons about the task and chooses the next action. Tools are functions the agent can call, such as searching the web, querying a database, running code, sending an email, or calling an external API. Memory lets the agent keep track of information: short-term memory holds the current conversation and intermediate results, while long-term memory stores facts across sessions, often in a vector database. Planning is the agent's ability to break a large goal into smaller steps and decide their order. Instructions, usually given in a system prompt, describe the agent's role, its goal, and the rules it must follow.
+
+How an Agent Works: The Agent Loop
+Most agents run in a loop. First, the agent receives a goal from the user. Second, the LLM reasons about what to do next and either answers directly or picks a tool and its inputs. Third, the tool runs and its result, called an observation, is passed back to the LLM. The loop repeats until the LLM decides the task is complete or a step limit is reached.
+
+The ReAct Pattern
+ReAct, short for Reasoning and Acting, is a popular pattern for agents. The model alternates between a thought (reasoning about what to do), an action (calling a tool), and an observation (reading the tool's result). Writing out its reasoning step by step helps the model choose better actions and makes its behavior easier to debug.
+
+Tool Calling
+Modern LLMs support tool calling, also called function calling. The developer describes each tool with a name, a short description, and a schema for its inputs. The model then returns a structured request such as "call get_weather with city equal to Paris" instead of plain text. The application runs the tool and sends the result back to the model. The Model Context Protocol (MCP) is an open standard that lets agents connect to tools and data sources in a consistent way.
+
+Agentic RAG
+In a standard RAG pipeline, the system always retrieves documents once and then generates an answer. In agentic RAG, retrieval is a tool the agent can choose to use. The agent decides whether it needs to search, rewrites the question to get better results, searches several sources, and checks whether the retrieved context is good enough before answering.
+
+Multi-Agent Systems
+Complex tasks can be split across several specialized agents. A common design uses a supervisor agent that plans the work and hands sub-tasks to worker agents, for example one researcher, one coder, and one reviewer. Frameworks such as LangGraph, CrewAI, AutoGen, and the Claude Agent SDK help developers build single-agent and multi-agent systems.
+
+Applications
+AI agents are used for coding assistants that read, write, and test code, customer support that can look up orders and process refunds, research assistants that search and summarize many sources, data analysis, workflow automation, and personal assistants that manage email and calendars.
+
+Challenges
+Agents can make mistakes that add up over many steps, and an LLM may call the wrong tool or invent tool inputs. Long loops cost more time and tokens. Giving agents access to real tools creates security risks such as prompt injection, where malicious text in a web page or document tries to take over the agent. Good practices include limiting which tools an agent can use, asking a human to approve risky actions, setting step limits, and logging every step for evaluation and debugging.
+
+Conclusion
+AI agents turn LLMs from question-answering systems into systems that can take actions. By combining reasoning, tools, memory, and planning, they can complete multi-step tasks, and retrieval systems such as RAG give them access to accurate, up-to-date knowledge.

@@ -1,0 +1,31 @@
+Reinforcement Learning: An Introduction
+
+Reinforcement learning (RL) is a branch of machine learning in which an agent learns to make decisions by interacting with an environment. Instead of learning from labeled examples, the agent tries actions, receives rewards or penalties, and gradually learns which actions lead to the highest total reward over time. It is similar to how people and animals learn through trial and error.
+
+Key Concepts
+The agent is the learner or decision maker. The environment is everything the agent interacts with. At each step the agent observes the current state of the environment, chooses an action, and receives a reward together with the next state. A policy is the agent's strategy: a rule that maps states to actions. A value function estimates how much total reward the agent can expect from a state, or from taking a specific action in a state. An episode is one complete run from a starting state to an end state, such as one game of chess.
+
+The Discount Factor
+Future rewards are usually worth less than immediate ones. The discount factor, called gamma and set between 0 and 1, controls how much the agent cares about future rewards. A gamma close to 0 makes the agent short-sighted, while a gamma close to 1 makes it plan for the long term.
+
+Exploration vs. Exploitation
+An RL agent must balance exploration, trying new actions to discover better rewards, with exploitation, choosing the best action it already knows. A common approach is the epsilon-greedy strategy: with a small probability epsilon the agent picks a random action, and otherwise it picks the action with the highest estimated value.
+
+Markov Decision Processes
+Most RL problems are described as a Markov Decision Process (MDP), defined by a set of states, a set of actions, transition probabilities between states, a reward function, and a discount factor. The Markov property means the next state depends only on the current state and action, not on the full history.
+
+Types of Algorithms
+Model-free methods learn directly from experience without building a model of the environment. Q-Learning learns the value of each action in each state and is off-policy, meaning it can learn the best policy while following a different one. SARSA is a similar but on-policy method. Deep Q-Networks (DQN) use a neural network to estimate Q-values, which allowed RL to play Atari games directly from screen pixels.
+
+Policy gradient methods, such as REINFORCE, learn the policy directly instead of a value function. Actor-critic methods combine both: an actor chooses actions and a critic evaluates them. Proximal Policy Optimization (PPO) is a popular, stable actor-critic algorithm.
+
+Model-based methods first learn a model of how the environment behaves and then use it to plan ahead. AlphaZero, for example, combines a learned model with tree search.
+
+Applications
+Reinforcement learning is used in game playing (AlphaGo, AlphaZero, Atari agents), robotics and robot control, self-driving cars, recommendation systems, resource management in data centers, finance and trading, and Reinforcement Learning from Human Feedback (RLHF), which fine-tunes large language models to give more helpful and safer answers.
+
+Challenges
+RL often needs a very large number of interactions to learn, which can be slow or expensive in the real world. Designing a good reward function is hard: a poorly designed reward can lead the agent to find shortcuts that maximize reward without solving the real task, a problem known as reward hacking. Training can also be unstable, and policies learned in simulation do not always transfer well to the real world.
+
+Conclusion
+Reinforcement learning teaches agents to make a sequence of good decisions through trial and error. Combined with deep learning, it has produced systems that beat human champions at complex games and helps align large language models with human preferences.
