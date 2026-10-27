@@ -2,8 +2,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Resolves to the root of RAG-Bootcamp/
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+# Resolves to the root of RAG-Bootcamp/ (src/ragkit/config.py -> ragkit -> src -> project root)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 # Load .env from the project root, whatever the current working directory is
 load_dotenv(PROJECT_ROOT / ".env")
