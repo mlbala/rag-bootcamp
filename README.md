@@ -70,6 +70,15 @@ cp .env.example .env     # then fill in the keys for the notebooks you run
 
 Then open a notebook in VS Code or Jupyter using the `.venv` kernel.
 
+## Running the notebooks
+
+- Notebooks take their paths from `src.config` (`RAW_TEXT_DIR`, `CHROMA_PATH`, ...), so each one runs from its own folder: there is no `os.chdir` and no relative `data/...` path.
+- API keys are read from `.env` in the project root. `.env.example` lists the keys each notebook needs.
+- Local vector stores are written to `vectorstore/`. `01_chromadb` rebuilds `chroma_db/` on every run and `02_conversational_memory` reuses it, so run `01_chromadb` first. `03_faiss` builds `faiss_index/`.
+- The cloud notebooks (Chroma Cloud, Astra DB, Pinecone, Milvus) upsert chunks with stable ids, so re-running them overwrites the same chunks instead of duplicating them.
+
+**`ModuleNotFoundError: No module named 'src'`?** The kernel was started before `uv sync`, or it isn't the `.venv` interpreter: select the `.venv` kernel and restart it. If a notebook was open while files were moved, close its tab without saving and reopen it from its new path.
+
 ## Shared code: `src/`
 
 Because `uv sync` installs `src/` in editable mode, `from src... import ...` works from any folder (notebooks, apps, scripts) without `sys.path` changes or `os.chdir`, and edits to `src/` are picked up on the next kernel restart.
