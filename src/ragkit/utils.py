@@ -13,7 +13,7 @@ from .config import PROJECT_ROOT
 def short_source(doc: Document) -> str:
     """The document's "source", relative to the project root when it is a file inside the project.
 
-    Loaders given src.config paths store absolute paths; this turns
+    Loaders given ragkit.config paths store absolute paths; this turns
     "/Users/.../RAG-Bootcamp/data/raw/text/ai_agents.txt" back into "data/raw/text/ai_agents.txt".
     Anything else (a URL, a table name, "notes") is returned unchanged.
     """

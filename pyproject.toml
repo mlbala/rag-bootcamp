@@ -42,8 +42,8 @@ dependencies = [
 requires = ["uv_build>=0.12.15,<0.13.0"]
 build-backend = "uv_build"
 
-# Ship the src/ folder itself as the importable package, so `from src.config import ...`
-# works from notebooks/, apps/ and scripts once `uv sync` installs the project in editable mode
+# Ship src/ragkit/ as the importable `ragkit` package (module-root defaults to "src"), so
+# `from ragkit.config import ...` works from notebooks/, apps/ and scripts once `uv sync`
+# installs the project in editable mode. Only src/ goes on sys.path, not the project root.
 [tool.uv.build-backend]
-module-name = "src"
-module-root = ""
+module-name = "ragkit"
