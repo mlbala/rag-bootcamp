@@ -17,7 +17,7 @@
 ```text
 RAG-Bootcamp/
 ├── .env.example                      Every API key the notebooks read; copy it to .env (gitignored)
-├── pyproject.toml, uv.lock           Dependencies; `uv sync` also installs src/ in editable mode
+├── pyproject.toml, uv.lock           Dependencies; `uv sync` also installs src/ragkit/ in editable mode
 │
 ├── data/
 │   ├── data_parsing/                 Parsed documents
@@ -34,10 +34,12 @@ RAG-Bootcamp/
 │   ├── chroma_db/
 │   └── faiss_index/
 │
-├── src/                              Shared code for notebooks and apps
-│   ├── config.py                       Project paths, and loads .env
-│   ├── llm_factory.py                  get_llm() and get_embeddings()
-│   └── utils.py                        Document, chunk and retriever inspection helpers
+├── src/
+│   └── ragkit/                       Shared code for notebooks and apps, imported as `ragkit`
+│       ├── __init__.py
+│       ├── config.py                   Project paths, and loads .env
+│       ├── llm_factory.py              get_llm() and get_embeddings()
+│       └── utils.py                    Document, chunk and retriever inspection helpers
 │
 ├── notebooks/
 │   ├── 01_ingestion_and_chunking/
@@ -57,14 +59,14 @@ RAG-Bootcamp/
     └── multi_agent_report_generator/
 ```
 
-`data/` and `vectorstore/` live at the project root, so notebooks, `src/` and apps all read and write the same files.
+`data/` and `vectorstore/` live at the project root, so notebooks, `ragkit` and apps all read and write the same files.
 
 ## Setup
 
 Requires Python 3.14+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-uv sync                  # installs the dependencies, and src/ as an editable package
+uv sync                  # installs the dependencies, and src/ragkit/ as the editable package `ragkit`
 cp .env.example .env     # then fill in the keys for the notebooks you run
 ```
 
@@ -72,20 +74,20 @@ Then open a notebook in VS Code or Jupyter using the `.venv` kernel.
 
 ## Running the notebooks
 
-- Notebooks take their paths from `src.config` (`RAW_TEXT_DIR`, `CHROMA_PATH`, ...), so each one runs from its own folder: there is no `os.chdir` and no relative `data/...` path.
+- Notebooks take their paths from `ragkit.config` (`RAW_TEXT_DIR`, `CHROMA_PATH`, ...), so each one runs from its own folder: there is no `os.chdir` and no relative `data/...` path.
 - API keys are read from `.env` in the project root. `.env.example` lists the keys each notebook needs.
 - Local vector stores are written to `vectorstore/`. `01_chromadb` rebuilds `chroma_db/` on every run and `02_conversational_memory` reuses it, so run `01_chromadb` first. `03_faiss` builds `faiss_index/`.
 - The cloud notebooks (Chroma Cloud, Astra DB, Pinecone, Milvus) upsert chunks with stable ids, so re-running them overwrites the same chunks instead of duplicating them.
 
-**`ModuleNotFoundError: No module named 'src'`?** The kernel was started before `uv sync`, or it isn't the `.venv` interpreter: select the `.venv` kernel and restart it. If a notebook was open while files were moved, close its tab without saving and reopen it from its new path.
+**`ModuleNotFoundError: No module named 'ragkit'`?** The kernel was started before `uv sync`, or it isn't the `.venv` interpreter: select the `.venv` kernel and restart it. If a notebook was open while files were moved or edited on disk (it still imports from the old `src` package), close its tab without saving and reopen it.
 
-## Shared code: `src/`
+## Shared code: the `ragkit` package (`src/ragkit/`)
 
-Because `uv sync` installs `src/` in editable mode, `from src... import ...` works from any folder (notebooks, apps, scripts) without `sys.path` changes or `os.chdir`, and edits to `src/` are picked up on the next kernel restart.
+The repo uses the standard src layout: `uv sync` installs `src/ragkit/` as the editable package `ragkit`, so `from ragkit... import ...` works from any folder (notebooks, apps, scripts) without `sys.path` changes or `os.chdir`, and edits to `src/ragkit/` are picked up on the next kernel restart. Only `src/` is put on `sys.path`, not the project root, so folders like `data/` or `notebooks/` can't be imported by accident.
 
-### Paths: `src.config`
+### Paths: `ragkit.config`
 
-Importing `src.config` also loads `.env` from the project root. Every constant is an absolute `pathlib.Path`:
+Importing `ragkit.config` also loads `.env` from the project root. Every constant is an absolute `pathlib.Path`:
 
 | Constant | Folder |
 | --- | --- |
@@ -105,7 +107,7 @@ Importing `src.config` also loads `.env` from the project root. Every constant i
 | `FAISS_PATH` | `vectorstore/faiss_index/` |
 
 ```python
-from src.config import RAW_PDF_DIR, CHROMA_PATH, FAISS_PATH
+from ragkit.config import RAW_PDF_DIR, CHROMA_PATH, FAISS_PATH
 
 docs = PyPDFLoader(RAW_PDF_DIR / "1706.03762v7.pdf").load()
 faiss_store.save_local(FAISS_PATH)
@@ -113,10 +115,10 @@ chroma_store = Chroma(collection_name="text_docs", embedding_function=embeddings
                       persist_directory=str(CHROMA_PATH))   # Chroma needs a str, not a Path
 ```
 
-### Models: `src.llm_factory`
+### Models: `ragkit.llm_factory`
 
 ```python
-from src.llm_factory import get_llm, get_embeddings
+from ragkit.llm_factory import get_llm, get_embeddings
 
 llm = get_llm()                                   # OpenAI gpt-5, temperature 0
 llm = get_llm("groq")                             # openai/gpt-oss-120b on Groq (GROQ_API_KEY)
@@ -127,7 +129,7 @@ embeddings = get_embeddings("huggingface")        # sentence-transformers/all-Mi
 
 Each provider's package is imported only when it is used, and extra keyword arguments go to the model class (`get_embeddings("openai", dimensions=1024)`).
 
-### Inspection: `src.utils`
+### Inspection: `ragkit.utils`
 
 | Helper | What it does |
 | --- | --- |
@@ -137,4 +139,4 @@ Each provider's package is imported only when it is used, and extra keyword argu
 | `format_docs(docs)` | Joins chunks into a prompt context, each labelled `[Source: ...]` |
 | `source_label(doc)` | `data/raw/pdf/1706.03762v7.pdf p.3`: the project-relative source plus page, sheet, table or row |
 
-Loaders given `src.config` paths store absolute paths in `metadata["source"]`. `source_label()` and `format_docs()` shorten them to project-relative paths.
+Loaders given `ragkit.config` paths store absolute paths in `metadata["source"]`. `source_label()` and `format_docs()` shorten them to project-relative paths.
