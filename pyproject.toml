@@ -1,7 +1,7 @@
 [project]
-name = "ragkit"
+name = "rag-bootcamp"
 version = "0.1.0"
-description = "Add your description here"
+description = "Hands-on RAG tutorial, from basic retrieval to agentic pipelines, with shared helpers in src/"
 readme = "README.md"
 authors = [
     { name = "mlbala", email = "imbkrishnaa@gmail.com" }
@@ -20,6 +20,7 @@ dependencies = [
     "langchain-groq>=1.1.3",
     "langchain-huggingface>=1.2.2",
     "langchain-milvus>=0.4.0",
+    "langchain-ollama>=1.1.0",
     "langchain-openai>=1.6.2",
     "langchain-pinecone>=0.2.13",
     "langchain-text-splitters>=1.1.2",
@@ -37,9 +38,12 @@ dependencies = [
     "unstructured[docx]>=0.27.8",
 ]
 
-[project.scripts]
-ragkit = "ragkit:main"
-
 [build-system]
 requires = ["uv_build>=0.12.15,<0.13.0"]
 build-backend = "uv_build"
+
+# Ship the src/ folder itself as the importable package, so `from src.config import ...`
+# works from notebooks/, apps/ and scripts once `uv sync` installs the project in editable mode
+[tool.uv.build-backend]
+module-name = "src"
+module-root = ""

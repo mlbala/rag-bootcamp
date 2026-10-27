@@ -14,27 +14,127 @@
 
 ## Repo layout
 
-```
-notebooks/                        Step-by-step course notebooks, one folder per section
-  01_data_ingestion_parsing/      Loading and parsing text, PDF, Word, CSV/Excel, JSON, and databases
-  02_vector_embeddings/
-  03_vector_stores_databases/
-  04_advanced_chunking/
-  05_hybrid_search/
-src/ragkit/                       Reusable helper code
-data/                             Raw documents, parsed output, and local vector stores
+```text
+RAG-Bootcamp/
+├── .env.example                      Every API key the notebooks read; copy it to .env (gitignored)
+├── pyproject.toml, uv.lock           Dependencies; `uv sync` also installs src/ in editable mode
+│
+├── data/
+│   ├── data_parsing/                 Parsed documents
+│   ├── processed/                    Generated files (gitignored, the folder is kept)
+│   └── raw/                          Source documents used by the notebooks
+│       ├── databases/                  SQLite (company.db)
+│       ├── json_files/                 JSON and JSON Lines
+│       ├── pdf/                        Research papers
+│       ├── structured_files/           CSV and Excel
+│       ├── text/                       Plain-text articles
+│       └── word_files/                 .docx
+│
+├── vectorstore/                      Local vector stores built by the notebooks (gitignored)
+│   ├── chroma_db/
+│   └── faiss_index/
+│
+├── src/                              Shared code for notebooks and apps
+│   ├── config.py                       Project paths, and loads .env
+│   ├── llm_factory.py                  get_llm() and get_embeddings()
+│   └── utils.py                        Document, chunk and retriever inspection helpers
+│
+├── notebooks/
+│   ├── 01_ingestion_and_chunking/
+│   │   ├── 01_data_ingestion_parsing/    Text, PDF, Word, CSV/Excel, JSON and database loaders
+│   │   ├── 02_vector_embeddings/         HuggingFace and OpenAI embeddings, semantic similarity
+│   │   ├── 03_vector_stores_databases/   Chroma (local and Cloud), FAISS, in-memory, Astra DB, Pinecone, Milvus
+│   │   └── 04_advanced_chunking/
+│   ├── 02_advanced_retrieval/
+│   │   └── 01_hybrid_search/
+│   ├── 03_multimodal_and_graph_rag/
+│   ├── 04_agentic_rag_langgraph/
+│   └── 05_eval_and_observability/
+│
+└── apps/
+    ├── domain_knowledge_chatbot/
+    ├── multimodal_assistant/
+    └── multi_agent_report_generator/
 ```
 
-Each notebook starts by moving up to the project root (the folder with `pyproject.toml`), so paths like `data/raw/...` work from any section folder.
+`data/` and `vectorstore/` live at the project root, so notebooks, `src/` and apps all read and write the same files.
 
 ## Setup
 
 Requires Python 3.14+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-uv sync
+uv sync                  # installs the dependencies, and src/ as an editable package
+cp .env.example .env     # then fill in the keys for the notebooks you run
 ```
 
-Create a `.env` file in the project root with the API keys you need (for example `OPENAI_API_KEY`, `GROQ_API_KEY`, `LANGSMITH_API_KEY`). It is gitignored.
-
 Then open a notebook in VS Code or Jupyter using the `.venv` kernel.
+
+## Running the notebooks
+
+- Notebooks take their paths from `src.config` (`RAW_TEXT_DIR`, `CHROMA_PATH`, ...), so each one runs from its own folder: there is no `os.chdir` and no relative `data/...` path.
+- API keys are read from `.env` in the project root. `.env.example` lists the keys each notebook needs.
+- Local vector stores are written to `vectorstore/`. `01_chromadb` rebuilds `chroma_db/` on every run and `02_conversational_memory` reuses it, so run `01_chromadb` first. `03_faiss` builds `faiss_index/`.
+- The cloud notebooks (Chroma Cloud, Astra DB, Pinecone, Milvus) upsert chunks with stable ids, so re-running them overwrites the same chunks instead of duplicating them.
+
+**`ModuleNotFoundError: No module named 'src'`?** The kernel was started before `uv sync`, or it isn't the `.venv` interpreter: select the `.venv` kernel and restart it. If a notebook was open while files were moved, close its tab without saving and reopen it from its new path.
+
+## Shared code: `src/`
+
+Because `uv sync` installs `src/` in editable mode, `from src... import ...` works from any folder (notebooks, apps, scripts) without `sys.path` changes or `os.chdir`, and edits to `src/` are picked up on the next kernel restart.
+
+### Paths: `src.config`
+
+Importing `src.config` also loads `.env` from the project root. Every constant is an absolute `pathlib.Path`:
+
+| Constant | Folder |
+| --- | --- |
+| `PROJECT_ROOT` | the repo root |
+| `DATA_DIR` | `data/` |
+| `DATA_PARSING_DIR` | `data/data_parsing/` |
+| `PROCESSED_DATA_DIR` | `data/processed/` |
+| `RAW_DATA_DIR` | `data/raw/` |
+| `RAW_DB_DIR` | `data/raw/databases/` |
+| `RAW_JSON_DIR` | `data/raw/json_files/` |
+| `RAW_PDF_DIR` | `data/raw/pdf/` |
+| `RAW_STRUCTURED_DIR` | `data/raw/structured_files/` |
+| `RAW_TEXT_DIR` | `data/raw/text/` |
+| `RAW_WORD_DIR` | `data/raw/word_files/` |
+| `VECTOR_STORE_DIR` | `vectorstore/` |
+| `CHROMA_PATH` | `vectorstore/chroma_db/` |
+| `FAISS_PATH` | `vectorstore/faiss_index/` |
+
+```python
+from src.config import RAW_PDF_DIR, CHROMA_PATH, FAISS_PATH
+
+docs = PyPDFLoader(RAW_PDF_DIR / "1706.03762v7.pdf").load()
+faiss_store.save_local(FAISS_PATH)
+chroma_store = Chroma(collection_name="text_docs", embedding_function=embeddings,
+                      persist_directory=str(CHROMA_PATH))   # Chroma needs a str, not a Path
+```
+
+### Models: `src.llm_factory`
+
+```python
+from src.llm_factory import get_llm, get_embeddings
+
+llm = get_llm()                                   # OpenAI gpt-5, temperature 0
+llm = get_llm("groq")                             # openai/gpt-oss-120b on Groq (GROQ_API_KEY)
+llm = get_llm("ollama", model="llama3.2")         # a local Ollama server
+embeddings = get_embeddings()                     # OpenAI text-embedding-3-small
+embeddings = get_embeddings("huggingface")        # sentence-transformers/all-MiniLM-L6-v2, runs locally
+```
+
+Each provider's package is imported only when it is used, and extra keyword arguments go to the model class (`get_embeddings("openai", dimensions=1024)`).
+
+### Inspection: `src.utils`
+
+| Helper | What it does |
+| --- | --- |
+| `inspect_chunks(chunks)` | Chunk count, size range, chunks per source, and the first few chunks |
+| `print_docs(docs)` | Source, length, metadata and a preview of each Document; also takes `(doc, score)` pairs |
+| `compare_retrievers(query, {"name": retriever, ...})` | Runs one query through several retrievers and marks the chunks only one of them found |
+| `format_docs(docs)` | Joins chunks into a prompt context, each labelled `[Source: ...]` |
+| `source_label(doc)` | `data/raw/pdf/1706.03762v7.pdf p.3`: the project-relative source plus page, sheet, table or row |
+
+Loaders given `src.config` paths store absolute paths in `metadata["source"]`. `source_label()` and `format_docs()` shorten them to project-relative paths.

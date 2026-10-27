@@ -43,9 +43,11 @@ credentials.json
 .vscode/
 .idea/
 
-# Generated data / vector stores
-data/processed/
-data/vectorstore/
+# Generated data: keep the folder (via .gitkeep), ignore what the notebooks write into it
+data/processed/*
+!data/processed/.gitkeep
+
+# Local vector stores at the project root (chroma_db/, faiss_index/, ...): rebuilt by the notebooks
 vectorstore/*
 !vectorstore/.gitkeep
 *.sqlite3
